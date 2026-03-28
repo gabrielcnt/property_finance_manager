@@ -1,0 +1,29 @@
+[tool.ruff]
+# define a versão minima do python
+target-version = "py312"
+
+# largura maxima da linha
+line-length = 88
+
+[tool.ruff.lint]
+# habilita regras: E (erro),F (pyflakes), I (isort), B (bugbear)
+select = ["E", "F", "I", "B"]
+
+# Ignora avisos especificos se necessário
+ignore = []
+
+[tool.ruff.format]
+# usa aspas duplas
+quote-style = "double"
+
+
+
+[tool.mypy]
+# força a tipar funções
+disallow_untyped_defs = true
+
+# avisa se estiver usando bibliotecas que não tem tipos definidos
+ignore_missing_imports = true
+
+# mostra código de erro para facilitar busca no google
+show_error_codes = true
