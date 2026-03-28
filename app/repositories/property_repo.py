@@ -34,6 +34,9 @@ class PropertyRepository:
 
         return property
 
+    def get_by_name(self, propertty_name: str) -> Property | None:
+        return self.db.query(Property).filter(Property.name == propertty_name).first()
+
     def update(
         self, property_id: int, property_update: PropertyUpdate
     ) -> Property | None:
