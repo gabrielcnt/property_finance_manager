@@ -10,7 +10,7 @@ line-length = 88
 select = ["E", "F", "I", "B"]
 
 # Ignora avisos especificos se necessário
-ignore = []
+ignore = ["B008"]
 
 [tool.ruff.format]
 # usa aspas duplas

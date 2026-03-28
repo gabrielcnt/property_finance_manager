@@ -7,5 +7,5 @@ router = APIRouter()
 
 
 @router.get("/test-db")
-def test_db(db: Session = Depends(get_db)):
+def test_db(db: Session = Depends(get_db)) -> dict:
     return {"message": "DB conectado com sucesso"}
