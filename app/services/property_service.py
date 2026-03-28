@@ -3,10 +3,6 @@ from app.repositories.property_repo import PropertyRepository
 from app.schemas.property_schema import PropertyCreate, PropertyUpdate
 
 
-class NameRequiredError(Exception):
-    pass
-
-
 class ExistingNameError(Exception):
     pass
 
@@ -21,13 +17,10 @@ class PropertyService:
 
     def create_property(self, new_property: PropertyCreate) -> Property:
 
-        if not new_property:
-            raise NameRequiredError("Nome é obrigatório")
-
         if new_property.name is not None:
             existing_name = self.repository.get_by_name(new_property.name)
 
-        if not existing_name:
+        if existing_name:
             raise ExistingNameError("Já existe um imóvel com esse nome")
 
         return self.repository.create(new_property)
@@ -37,7 +30,7 @@ class PropertyService:
 
     def update_property(
         self, property_id: int, property_update: PropertyUpdate
-    ) -> Property | None:
+    ) -> Property:
         property = self.repository.get_by_id(property_id)
 
         if property is None:
@@ -49,7 +42,7 @@ class PropertyService:
             if existing_name and existing_name.id != property_id:
                 raise ExistingNameError("Já existe um imóvel com esse nome")
 
-        return self.repository.update(property_id, property_update)
+        return self.repository.update(property, property_update)
 
     def delete_property(self, property_id: int) -> Property | None:
         property = self.repository.get_by_id(property_id)
