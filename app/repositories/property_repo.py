@@ -29,26 +29,18 @@ class PropertyRepository:
     def get_by_id(self, property_id: int) -> Property | None:
 
         property = self.db.query(Property).filter(Property.id == property_id).first()
-        if not property:
-            return None
 
         return property
 
     def get_by_name(self, propertty_name: str) -> Property | None:
         return self.db.query(Property).filter(Property.name == propertty_name).first()
 
-    def update(
-        self, property_id: int, property_update: PropertyUpdate
-    ) -> Property | None:
+    def update(self, property: Property, property_update: PropertyUpdate) -> Property:
         try:
-            property = (
-                self.db.query(Property).filter(Property.id == property_id).first()
-            )
-            if not property:
-                return None
+            update_data = property_update.model_dump(exclude_unset=True)
 
-            if property_update.name is not None:
-                property.name = property_update.name
+            for key, value in update_data.items():
+                setattr(property, key, value)
 
             self.db.commit()
             self.db.refresh(property)
@@ -64,8 +56,6 @@ class PropertyRepository:
             property = (
                 self.db.query(Property).filter(Property.id == property_id).first()
             )
-            if not property:
-                return None
 
             self.db.delete(property)
             self.db.commit()
