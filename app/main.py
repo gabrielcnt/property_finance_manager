@@ -2,7 +2,9 @@ from fastapi import FastAPI
 
 from app.api import test_router
 from app.core.database import Base, engine
+from app.models.property import Property
 from app.models.test_table import TestTable
+
 
 
 app = FastAPI()
