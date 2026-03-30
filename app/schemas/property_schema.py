@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -44,6 +45,7 @@ class PropertyUpdate(BaseModel):
 class PropertyResponse(BaseModel):
     id: int
     name: str
+    created_at: datetime
+    modified_at: datetime
 
-
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
