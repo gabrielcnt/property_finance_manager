@@ -30,9 +30,6 @@ class TransactionRepository:
             self.db.query(Transaction).filter(Transaction.id == transaction_id).first()
         )
 
-    def get_all(self) -> list[Transaction]:
-        return self.db.query(Transaction).all()
-
     def update(
         self, transaction: Transaction, update: TransactionUpdate
     ) -> Transaction:
@@ -51,14 +48,8 @@ class TransactionRepository:
             self.db.rollback()
             raise
 
-    def delete(self, transaction_id: int) -> Transaction | None:
+    def delete(self, transaction: Transaction) -> Transaction:
         try:
-            transaction = (
-                self.db.query(Transaction)
-                .filter(Transaction.id == transaction_id)
-                .first()
-            )
-
             self.db.delete(transaction)
             self.db.commit()
 

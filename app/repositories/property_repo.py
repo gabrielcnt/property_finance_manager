@@ -11,13 +11,13 @@ class PropertyRepository:
 
     def create(self, new_property: PropertyCreate) -> Property:
         try:
-            property = Property(name=new_property.name)
+            property_obj = Property(name=new_property.name)
 
-            self.db.add(property)
+            self.db.add(property_obj)
             self.db.commit()
-            self.db.refresh(property)
+            self.db.refresh(property_obj)
 
-            return property
+            return property_obj
 
         except SQLAlchemyError:
             self.db.rollback()
@@ -28,12 +28,14 @@ class PropertyRepository:
 
     def get_by_id(self, property_id: int) -> Property | None:
 
-        property = self.db.query(Property).filter(Property.id == property_id).first()
+        property_obj = (
+            self.db.query(Property).filter(Property.id == property_id).first()
+        )
 
-        return property
+        return property_obj
 
-    def get_by_name(self, propertty_name: str) -> Property | None:
-        return self.db.query(Property).filter(Property.name == propertty_name).first()
+    def get_by_name(self, property_name: str) -> Property | None:
+        return self.db.query(Property).filter(Property.name == property_name).first()
 
     def update(self, property: Property, property_update: PropertyUpdate) -> Property:
         try:
@@ -53,14 +55,14 @@ class PropertyRepository:
 
     def delete(self, property_id: int) -> Property | None:
         try:
-            property = (
+            property_obj = (
                 self.db.query(Property).filter(Property.id == property_id).first()
             )
 
-            self.db.delete(property)
+            self.db.delete(property_obj)
             self.db.commit()
 
-            return property
+            return property_obj
         except SQLAlchemyError:
             self.db.rollback()
             raise
