@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, field_validator
@@ -10,7 +11,7 @@ def validate_amount(value: float) -> float:
     return value
 
 
-class TransactionType(BaseModel):
+class TransactionType(str, Enum):
     income = "income"
     expense = "expense"
 
@@ -46,7 +47,6 @@ class TransactionUpdate(BaseModel):
         if value is None:
             return value
         return validate_amount(value)
-
 
 
 class TransactionResponse(BaseModel):
