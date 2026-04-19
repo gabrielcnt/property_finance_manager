@@ -22,7 +22,7 @@ class Transaction(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
     property_id: Mapped[int] = mapped_column(
-        ForeignKey("properties.id"), index=True, ondelete="CASCADE", nullable=False
+        ForeignKey("properties.id", ondelete="CASCADE"), index=True, nullable=False
     )
     type: Mapped[TransactionType] = mapped_column(String, nullable=False)
     amount: Mapped[float] = mapped_column(Float, nullable=False)
@@ -32,8 +32,10 @@ class Transaction(Base):
     description: Mapped[Optional[str]] = mapped_column(String)
     date: Mapped[datetime] = mapped_column(DateTime, nullable=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
-    modified_at: Mapped[datetime] = mapped_column(DateTime, onupdate=datetime.now)
+    modified_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now, onupdate=datetime.now
+    )
 
     property: Mapped["Property"] = relationship(back_populates="transactions")
 
-    __table_args__ = Index("idx_transactions_property_date", "property_id", "date")
+    __table_args__ = (Index("idx_transactions_property_date", "property_id", "date"),)

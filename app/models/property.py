@@ -15,8 +15,10 @@ class Property(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(nullable=False, unique=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
-    modified_at: Mapped[datetime] = mapped_column(DateTime, onupdate=datetime.now)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    modified_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now, onupdate=datetime.now, nullable=False
+    )
 
     transactions: Mapped[List["Transaction"]] = relationship(
         back_populates="property", cascade="all, delete-orphan"

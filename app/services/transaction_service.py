@@ -63,6 +63,13 @@ class TransactionService:
 
         return self.transaction_repo.delete(transaction)
 
+    def get_transaction_by_id(self, transaction_id: int) -> Transaction:
+        transaction = self.transaction_repo.get_by_id(transaction_id)
+
+        if transaction is None:
+            raise TransactionNotFoundError("Transação não encontrada")
+        return transaction
+
     def list_transactions(
         self,
         property_id: Optional[int] = None,

@@ -13,7 +13,7 @@ class TransactionRepository:
 
     def create(self, new_transaction: TransactionCreate) -> Transaction:
         try:
-            transaction = Transaction(new_transaction.model_dump())
+            transaction = Transaction(**new_transaction.model_dump())
 
             self.db.add(transaction)
             self.db.commit()
