@@ -121,4 +121,6 @@ def list_transaction_by_id(
     transaction_repo = TransactionRepository(db)
     transaction_service = TransactionService(transaction_repo, property_repo)
 
-    return transaction_service.get_transaction_by_id(transaction_id)
+    transaction = transaction_service.get_transaction_by_id(transaction_id)
+    
+    return TransactionResponse.model_validate(transaction)

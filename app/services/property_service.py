@@ -7,7 +7,7 @@ class ExistingNameError(Exception):
     pass
 
 
-class PropertyNoFoundError(Exception):
+class PropertyNotFoundError(Exception):
     pass
 
 
@@ -28,13 +28,21 @@ class PropertyService:
     def list_properties(self) -> list[Property]:
         return self.property_repo.get_all()
 
+    def get_property_by_id(self, property_id: int) -> Property:
+        property_obj = self.property_repo.get_by_id(property_id)
+
+        if property_obj is None:
+            raise PropertyNotFoundError("Imóvel não encontrado")
+
+        return property_obj
+
     def update_property(
         self, property_id: int, property_update: PropertyUpdate
     ) -> Property:
         property_obj = self.property_repo.get_by_id(property_id)
 
         if property_obj is None:
-            raise PropertyNoFoundError("Imóvel não encontrado")
+            raise PropertyNotFoundError("Imóvel não encontrado")
 
         if property_update.name is not None:
             existing_name = self.property_repo.get_by_name(property_update.name)
@@ -48,6 +56,6 @@ class PropertyService:
         property_obj = self.property_repo.get_by_id(property_id)
 
         if not property_obj:
-            raise PropertyNoFoundError("Imóvel não encontrado")
+            raise PropertyNotFoundError("Imóvel não encontrado")
 
         return self.property_repo.delete(property_id)

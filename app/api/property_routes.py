@@ -6,7 +6,7 @@ from app.repositories.property_repo import PropertyRepository
 from app.schemas.property_schema import PropertyCreate, PropertyResponse, PropertyUpdate
 from app.services.property_service import (
     ExistingNameError,
-    PropertyNoFoundError,
+    PropertyNotFoundError,
     PropertyService,
 )
 
@@ -28,7 +28,7 @@ def create_property(
             status_code=409, detail="Já existe um imóvel com esse nome"
         ) from err
 
-    except PropertyNoFoundError as err:
+    except PropertyNotFoundError as err:
         raise HTTPException(status_code=404, detail="Imóvel não encontrado") from err
 
 
@@ -41,6 +41,18 @@ def list_properties(db: Session = Depends(get_db)) -> list:
     return property_service.list_properties()
 
 
+@router.get("/{property_id}", response_model=PropertyResponse, status_code=200)
+def get_property_by_id(
+    property_id: int, db: Session = Depends(get_db)
+) -> PropertyResponse:
+    property_repo = PropertyRepository(db)
+    property_service = PropertyService(property_repo)
+
+    property_obj = property_service.get_property_by_id(property_id)
+
+    return PropertyResponse.model_validate(property_obj)
+
+
 @router.put("/{property_id}", response_model=PropertyResponse, status_code=200)
 def update_property(
     property_id: int, property_update: PropertyUpdate, db: Session = Depends(get_db)
@@ -51,7 +63,7 @@ def update_property(
 
         return property_service.update_property(property_id, property_update)
 
-    except PropertyNoFoundError as err:
+    except PropertyNotFoundError as err:
         raise HTTPException(status_code=404, detail="Imóvel não encontrado") from err
 
     except ExistingNameError as err:
@@ -69,5 +81,5 @@ def delete_property(property_id: int, db: Session = Depends(get_db)) -> dict:
         property_service.delete_property(property_id)
 
         return {"message": "Imóvel deletado com sucesso"}
-    except PropertyNoFoundError as err:
+    except PropertyNotFoundError as err:
         raise HTTPException(status_code=404, detail="Imóvel não encontrado") from err
