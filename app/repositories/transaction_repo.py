@@ -1,10 +1,15 @@
 from datetime import datetime
 
+from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.models.transactions import Transaction
-from app.schemas.transaction_schema import TransactionCreate, TransactionUpdate
+from app.schemas.transaction_schema import (
+    TransactionCreate,
+    TransactionType,
+    TransactionUpdate,
+)
 
 
 class TransactionRepository:
@@ -29,6 +34,17 @@ class TransactionRepository:
         return (
             self.db.query(Transaction).filter(Transaction.id == transaction_id).first()
         )
+
+    def get_all(self) -> list[Transaction]:
+        return self.db.query(Transaction).all()
+
+    def get_by_type(self, type: TransactionType) -> float:
+        result = (
+            self.db.query(func.sum(Transaction.amount))
+            .filter(Transaction.type == type)
+            .scalar()
+        )
+        return result or 0.0
 
     def update(
         self, transaction: Transaction, update: TransactionUpdate
