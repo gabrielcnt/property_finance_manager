@@ -46,6 +46,19 @@ class TransactionRepository:
         )
         return result or 0.0
 
+    def get_total_net_income(self) -> float:
+        fee = func.coalesce(Transaction.platform_fee_percent, 0)
+
+        net_amount = Transaction.amount - (Transaction.amount * (fee / 100))
+
+        result = (
+            self.db.query(func.sum(net_amount))
+            .filter(Transaction.type == TransactionType.income)
+            .scalar()
+        )
+
+        return result or 0.0
+
     def update(
         self, transaction: Transaction, update: TransactionUpdate
     ) -> Transaction:
